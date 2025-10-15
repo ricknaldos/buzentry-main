@@ -7,8 +7,10 @@ import { kv } from '@vercel/kv';
  * Creates a session and sets the cookie
  */
 export async function POST(req: NextRequest) {
-  // Only allow in dev mode
-  if (process.env.DEV_MODE !== 'true') {
+  // Allow in dev mode OR if ALLOW_DEMO_LOGIN is enabled
+  const isDemoAllowed = process.env.DEV_MODE === 'true' || process.env.ALLOW_DEMO_LOGIN === 'true';
+
+  if (!isDemoAllowed) {
     return NextResponse.json(
       { error: 'This endpoint is only available in development mode' },
       { status: 403 }

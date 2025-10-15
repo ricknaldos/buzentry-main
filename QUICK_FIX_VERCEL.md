@@ -7,6 +7,7 @@ Ve a tu proyecto en Vercel → **Settings** → **Environment Variables**
 Asegúrate que existan EXACTAMENTE estas variables:
 
 ```
+ALLOW_DEMO_LOGIN=true
 DEV_MODE=true
 NEXT_PUBLIC_DEV_MODE=true
 AUTH_SECRET=cualquier-string-aqui-123456
@@ -15,7 +16,9 @@ NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_51xxxYOUR_STRIPE_PUBLISHABLE_KEY_HERE
 STRIPE_PRICE_ID=price_1xxxYOUR_PRICE_ID_HERExxx
 ```
 
-⚠️ **IMPORTANTE:** Si `NEXT_PUBLIC_DEV_MODE` no existe o está en `false`, el botón NO aparecerá.
+⚠️ **IMPORTANTE:**
+- `ALLOW_DEMO_LOGIN=true` - Permite el acceso demo en producción
+- Si `NEXT_PUBLIC_DEV_MODE` no existe, los botones no aparecerán (pero `/dev-access` siempre funciona)
 
 ---
 
