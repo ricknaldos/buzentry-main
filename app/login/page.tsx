@@ -180,13 +180,43 @@ export default function LoginPage() {
 
       {/* DEV MODE: Direct login button */}
       {process.env.NEXT_PUBLIC_DEV_MODE === 'true' && (
-       <button
-        onClick={handleDevLogin}
-        disabled={isLoading}
-        className="w-full mb-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-3 rounded-full text-base font-bold hover:from-green-600 hover:to-emerald-700 transition-all hover:scale-105 active:scale-95 disabled:opacity-50 shadow-lg shadow-green-500/30"
-       >
-        {isLoading ? 'Logging in...' : '[DEV] Skip Email - Login Now'}
-       </button>
+       <div className="space-y-3">
+        <button
+         onClick={handleDevLogin}
+         disabled={isLoading}
+         className="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-3 rounded-full text-base font-bold hover:from-green-600 hover:to-emerald-700 transition-all hover:scale-105 active:scale-95 disabled:opacity-50 shadow-lg shadow-green-500/30"
+        >
+         {isLoading ? 'Logging in...' : '[DEV] Skip Email - Login Now'}
+        </button>
+        <div className="text-center text-sm text-gray-500">or</div>
+        <button
+         onClick={async () => {
+          setEmail('demo@buzentry.com');
+          setIsLoading(true);
+          try {
+           const response = await fetch('/api/auth/dev-login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: 'demo@buzentry.com' }),
+           });
+           if (response.ok) {
+            window.location.href = '/dashboard';
+           } else {
+            alert('Failed to login. Please try again.');
+            setIsLoading(false);
+           }
+          } catch (error) {
+           console.error('Demo login error:', error);
+           alert('Failed to login. Please try again.');
+           setIsLoading(false);
+          }
+         }}
+         disabled={isLoading}
+         className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-6 py-3 rounded-full text-base font-bold hover:from-blue-600 hover:to-indigo-700 transition-all hover:scale-105 active:scale-95 disabled:opacity-50 shadow-lg shadow-blue-500/30"
+        >
+         {isLoading ? 'Logging in...' : '🚀 Quick Demo Login'}
+        </button>
+       </div>
       )}
 
       <button

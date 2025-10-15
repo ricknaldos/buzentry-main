@@ -1008,6 +1008,29 @@ export default function Home() {
         Get Started Now — $6.99/month
        </button>
 
+       {/* DEV MODE: Quick Demo Button */}
+       {process.env.NEXT_PUBLIC_DEV_MODE === 'true' && (
+        <button
+         onClick={async () => {
+          try {
+           const response = await fetch('/api/auth/dev-login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: 'demo@buzentry.com' }),
+           });
+           if (response.ok) {
+            window.location.href = '/dashboard';
+           }
+          } catch (error) {
+           console.error('Demo login error:', error);
+          }
+         }}
+         className="w-full mt-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white px-8 py-3 rounded-full text-base font-bold hover:from-green-600 hover:to-emerald-700 transition-all hover:scale-105 active:scale-95 shadow-lg shadow-green-500/30 h-12"
+        >
+         🚀 Quick Demo (No Signup Required)
+        </button>
+       )}
+
        <p className="text-xs text-gray-500 mt-3 font-medium">
         🔒 Secure payment • No setup fees • Cancel anytime
        </p>
