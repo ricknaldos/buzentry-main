@@ -7,9 +7,14 @@ import { provisionPhoneNumber } from '@/lib/signalwire';
 import { sendWelcomeEmail } from '@/lib/email';
 import { getPreferredAreaCodes } from '@/lib/geolocation';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-09-30.clover',
-});
+function getStripe() {
+  if (!process.env.STRIPE_SECRET_KEY) {
+    throw new Error('STRIPE_SECRET_KEY is not configured');
+  }
+  return new Stripe(process.env.STRIPE_SECRET_KEY, {
+    apiVersion: '2025-09-30.clover',
+  });
+}
 
 async function handleSessionCreation(sessionId: string, req: NextRequest) {
   try {
@@ -38,6 +43,7 @@ async function handleSessionCreation(sessionId: string, req: NextRequest) {
       console.log(`[DEV MODE] Using mock data for ${email}`);
     } else {
       // PRODUCTION MODE: Use real Stripe
+      const stripe = getStripe();
       const stripeSession = await stripe.checkout.sessions.retrieve(sessionId);
       email = stripeSession.customer_email || stripeSession.customer_details?.email || '';
 
