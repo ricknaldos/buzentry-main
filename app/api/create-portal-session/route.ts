@@ -2,6 +2,15 @@ import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
 export async function POST(req: NextRequest) {
+  // DEV MODE: Return mock billing portal URL
+  if (process.env.DEV_MODE === 'true') {
+    console.log('[DEV MODE] Simulating Stripe billing portal');
+    const origin = req.headers.get('origin') || 'http://localhost:3001';
+    return NextResponse.json({
+      url: `${origin}/billing?dev_mode=true`,
+    });
+  }
+
   const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
 
   if (!stripeSecretKey) {
