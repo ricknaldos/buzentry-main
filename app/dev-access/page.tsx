@@ -13,25 +13,36 @@ export default function DevAccessPage() {
     setMessage('Creating account and logging in...');
 
     try {
+      console.log('[Dev Access] Starting login for:', email);
+
       const response = await fetch('/api/auth/dev-login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
       });
 
+      console.log('[Dev Access] Response status:', response.status);
+      const data = await response.json();
+      console.log('[Dev Access] Response data:', data);
+
       if (response.ok) {
-        setMessage('Success! Redirecting to dashboard...');
+        setMessage('✅ Success! Redirecting to dashboard...');
+        console.log('[Dev Access] Login successful, redirecting...');
+
+        // Force redirect
         setTimeout(() => {
+          console.log('[Dev Access] Executing redirect to /dashboard');
           window.location.href = '/dashboard';
-        }, 500);
+        }, 1000);
       } else {
-        const data = await response.json();
-        setMessage(`Error: ${data.error || 'Failed to login'}`);
+        const errorMsg = data.error || 'Failed to login';
+        setMessage(`❌ Error: ${errorMsg}`);
+        console.error('[Dev Access] Login failed:', errorMsg);
         setIsLoading(false);
       }
     } catch (error) {
-      console.error('Login error:', error);
-      setMessage('Error: Could not connect to server');
+      console.error('[Dev Access] Login error:', error);
+      setMessage(`❌ Error: ${error instanceof Error ? error.message : 'Could not connect to server'}`);
       setIsLoading(false);
     }
   };
@@ -57,10 +68,34 @@ export default function DevAccessPage() {
 
           {/* Status Message */}
           {message && (
-            <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-2xl">
-              <p className="text-sm text-gray-700 text-center">{message}</p>
+            <div className={`mb-6 p-4 rounded-2xl border ${
+              message.includes('Error') || message.includes('❌')
+                ? 'bg-red-50 border-red-200'
+                : message.includes('Success') || message.includes('✅')
+                ? 'bg-green-50 border-green-200'
+                : 'bg-blue-50 border-blue-200'
+            }`}>
+              <p className="text-sm text-gray-700 text-center font-medium">{message}</p>
             </div>
           )}
+
+          {/* Debug Info */}
+          <div className="mb-6 p-4 bg-gray-50 border border-gray-200 rounded-2xl text-xs">
+            <p className="font-bold text-gray-700 mb-2">Debug Info:</p>
+            <p className="text-gray-600">Current URL: {typeof window !== 'undefined' ? window.location.href : 'Loading...'}</p>
+            <p className="text-gray-600">Endpoint: /api/auth/dev-login</p>
+            <button
+              onClick={() => {
+                console.log('=== MANUAL TEST ===');
+                console.log('Window location:', window.location.href);
+                console.log('Fetch available:', typeof fetch !== 'undefined');
+                alert('Check browser console for details');
+              }}
+              className="mt-2 text-blue-600 hover:text-blue-700 font-semibold"
+            >
+              Test Console
+            </button>
+          </div>
 
           {/* Quick Access Buttons */}
           <div className="space-y-4">
