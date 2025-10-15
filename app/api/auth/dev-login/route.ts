@@ -49,6 +49,31 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    // Also create app profile if doesn't exist (for complete dev experience)
+    const { getUserByEmail, createUserProfile } = await import('@/lib/user-db');
+    let appProfile = await getUserByEmail(email);
+
+    if (!appProfile) {
+      console.log(`[DEV MODE] Creating app profile for ${email}`);
+      const mockPhone = '+1555' + Math.floor(Math.random() * 10000000).toString().padStart(7, '0');
+
+      appProfile = await createUserProfile({
+        email,
+        userId,
+        signalwirePhoneNumber: mockPhone,
+        doorCode: null,
+        accessCode: null,
+        isPaused: false,
+        pauseForwardingNumber: null,
+        passcodes: [],
+        stripeCustomerId: `dev_customer_${Date.now()}`,
+        stripeSubscriptionId: `dev_sub_${Date.now()}`,
+        subscriptionStatus: 'active',
+      });
+
+      console.log(`[DEV MODE] Created app profile with mock phone: ${mockPhone}`);
+    }
+
     // Create session
     const sessionToken = nanoid(32);
     const expires = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000);
