@@ -6,7 +6,6 @@ import MarketingHeader from '@/components/MarketingHeader';
 import Footer from '@/components/Footer';
 
 export default function PricingPage() {
- const [billingPeriod, setBillingPeriod] = useState<'monthly' | 'annual'>('monthly');
  const [openFaq, setOpenFaq] = useState<number | null>(null);
 
  const toggleFaq = (index: number) => {
@@ -21,10 +20,6 @@ export default function PricingPage() {
   {
    question: "Are there any hidden fees or extra charges?",
    answer: "No. The price you see is what you pay. No setup fees, no per-unlock charges, no extra costs for features. Everything is included."
-  },
-  {
-   question: "Can I switch from monthly to annual billing?",
-   answer: "Yes! You can upgrade to annual billing anytime from your dashboard to save 17%. The remaining balance from your monthly subscription will be credited."
   },
   {
    question: "What if BuzEntry doesn't work with my building?",
@@ -56,32 +51,9 @@ export default function PricingPage() {
     <h1 className="text-5xl sm:text-6xl font-black text-gray-900 mb-6 tracking-tight">
      Pricing
     </h1>
-    <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-8 leading-relaxed">
+    <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-12 leading-relaxed">
      $6.99/month, paid up front. 30-day refund (no questions asked). Keep your number when you move.
     </p>
-
-    {/* Billing Toggle */}
-    <div className="flex items-center justify-center gap-4 mb-12">
-     <span className={`text-sm font-bold ${billingPeriod === 'monthly' ? 'text-gray-900' : 'text-gray-500'}`}>
-      Monthly
-     </span>
-     <button
-      onClick={() => setBillingPeriod(billingPeriod === 'monthly' ? 'annual' : 'monthly')}
-      className="relative w-14 h-7 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full transition-all focus:outline-none focus:ring-4 focus:ring-blue-100 shadow-lg shadow-blue-500/30"
-     >
-      <div
-       className={`absolute top-0.5 left-0.5 w-6 h-6 bg-white rounded-full transition-transform shadow-md ${
-        billingPeriod === 'annual' ? 'translate-x-7' : 'translate-x-0'
-       }`}
-      />
-     </button>
-     <span className={`text-sm font-bold ${billingPeriod === 'annual' ? 'text-gray-900' : 'text-gray-500'}`}>
-      Annual
-      <span className="ml-2 px-2 py-1 bg-blue-50/50 text-blue-600 text-xs font-bold rounded-full border border-blue-100">
-       Save 17%
-      </span>
-     </span>
-    </div>
    </section>
 
    {/* Pricing Card */}
