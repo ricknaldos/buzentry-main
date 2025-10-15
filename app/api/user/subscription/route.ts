@@ -4,9 +4,14 @@ import { getUserByEmail, updateUserProfile } from '@/lib/user-db';
 import Stripe from 'stripe';
 import { kv } from '@vercel/kv';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-09-30.clover',
-});
+function getStripe() {
+  if (!process.env.STRIPE_SECRET_KEY) {
+    throw new Error('STRIPE_SECRET_KEY is not configured');
+  }
+  return new Stripe(process.env.STRIPE_SECRET_KEY, {
+    apiVersion: '2025-09-30.clover',
+  });
+}
 
 export async function GET() {
   // DEV MODE: Return mock subscription
@@ -35,6 +40,7 @@ export async function GET() {
     }
 
     // Query Stripe directly for latest subscription status
+    const stripe = getStripe();
     let customer;
     try {
       customer = await stripe.customers.retrieve(profile.stripeCustomerId, {
